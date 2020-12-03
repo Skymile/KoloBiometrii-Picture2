@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -33,6 +34,45 @@ namespace WpfApp
 				-channels + stride, 0 + stride, channels + stride,
 			};
 
+		public unsafe static Bitmap Niblack(Bitmap bmp)
+		{
+			BitmapData readData = bmp.LockBits(ImageLockMode.ReadOnly);
+			var writeBmp = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
+			BitmapData writeData = writeBmp.LockBits(ImageLockMode.WriteOnly);
+
+			byte* r = (byte*)readData.Scan0.ToPointer();
+			byte* w = (byte*)writeData.Scan0.ToPointer();
+
+			int stride = readData.Stride;
+			int height = bmp.Height;
+			int len = stride * height;
+
+			int[] offsets = GetOffsets(stride, 3);
+
+			static double NiblackFormulae(double mean, double std) =>
+				0.2 * std + mean;
+
+			for (int i = stride + 3; i < len - stride - 3; i++)
+			{
+				double mean = 0.0;
+				foreach (int o in offsets)
+					mean += r[i + o];
+				mean /= offsets.Length;
+
+				double std = 0.0;
+				foreach (int o in offsets)
+					std += (r[i + o] - mean) * (r[i + o] - mean);
+				std /= offsets.Length - 1;
+				std = Math.Sqrt(std);
+
+				double result = NiblackFormulae(mean, std);
+				w[i] = r[i] >= result ? byte.MaxValue : byte.MinValue;
+			}
+
+			bmp.UnlockBits(readData);
+			writeBmp.UnlockBits(writeData);
+			return writeBmp;
+		}
 
 		public unsafe static Bitmap Filter(Bitmap bmp, int[] matrix)
 		{

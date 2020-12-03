@@ -71,7 +71,8 @@ namespace WpfApp
 
 		private void Niblack_Click(object sender, RoutedEventArgs e)
 		{
-
+			this.bitmap = Effects.Niblack(this.bitmap);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
 		private void Savuola_Click(object sender, RoutedEventArgs e)
