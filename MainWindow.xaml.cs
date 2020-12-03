@@ -17,7 +17,7 @@ namespace WpfApp
 		public MainWindow()
 		{
 			InitializeComponent();
-			this.bitmap = new Bitmap("weird.png");
+			this.bitmap = new Bitmap("apple.png");
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
