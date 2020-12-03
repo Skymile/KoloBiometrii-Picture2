@@ -17,9 +17,9 @@
             <Button Content="Otsu"    Margin="5" Padding="5" Click="Otsu_Click"/>
             <Button Content="Reset"   Margin="5" Padding="5" Click="Reset_Click"/>
 
-            <Button Content="Niblack"   Margin="5" Padding="5" Click="Reset_Click"/>
-            <Button Content="Sauvola"   Margin="5" Padding="5" Click="Reset_Click"/>
-            <Button Content="Phansalkar"   Margin="5" Padding="5" Click="Reset_Click"/>
+            <Button Content="Niblack"   Margin="5" Padding="5" Click="Niblack_Click"/>
+            <Button Content="Sauvola"   Margin="5" Padding="5" Click="Savuola_Click"/>
+            <Button Content="Phansalkar"   Margin="5" Padding="5" Click="Phansalkar_Click"/>
 
             <Slider Minimum="0" Maximum="100" Name="MainSlider" ValueChanged="MainSlider_ValueChanged" />
 

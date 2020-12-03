@@ -10,7 +10,6 @@ namespace WpfApp
 		public static BitmapData LockBits(this Bitmap bitmap, ImageLockMode lockMode) =>
 			bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 	}
-	//FiraCode
 
 	public static class Effects
 	{

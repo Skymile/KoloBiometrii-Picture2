@@ -68,5 +68,20 @@ namespace WpfApp
 
 		private void MainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) => 
 			this.MainLabel.Content = (int)this.MainSlider.Value;
+
+		private void Niblack_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Savuola_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Phansalkar_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
 	}
 }
