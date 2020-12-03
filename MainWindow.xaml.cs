@@ -89,7 +89,8 @@ namespace WpfApp
 
 		private void Grayscale_Click(object sender, RoutedEventArgs e)
 		{
-
+			this.bitmap = Effects.Grayscale(this.bitmap);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 	}
 }

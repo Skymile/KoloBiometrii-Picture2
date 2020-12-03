@@ -9,7 +9,7 @@ namespace WpfApp
 	public static class BitmapExtensions
 	{
 		public static BitmapData LockBits(this Bitmap bitmap, ImageLockMode lockMode) =>
-			bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+			bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), lockMode, PixelFormat.Format24bppRgb);
 	}
 
 	public delegate double NiblackFormulae(double mean, double std);
@@ -150,6 +150,21 @@ namespace WpfApp
 			bmp.UnlockBits(readData);
 			writeBmp.UnlockBits(writeData);
 			return writeBmp;
+		}
+
+		public unsafe static Bitmap Grayscale(Bitmap bmp)
+		{
+			BitmapData data = bmp.LockBits(ImageLockMode.ReadWrite);
+
+			byte* ptr = (byte*)data.Scan0.ToPointer();
+			int len = data.Stride * bmp.Height;
+
+			for (int i = 0; i < len; i += 3)
+				ptr[i] = ptr[i + 1] = ptr[i + 2] =
+					(byte)((ptr[i] + ptr[i + 1] + ptr[i + 2]) / 3);
+
+			bmp.UnlockBits(data);
+			return bmp;
 		}
 
 
