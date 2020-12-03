@@ -77,10 +77,17 @@ namespace WpfApp
 
 		private void Savuola_Click(object sender, RoutedEventArgs e)
 		{
-
+			this.bitmap = Effects.Savuola(this.bitmap);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
 		private void Phansalkar_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap = Effects.Phansalkar(this.bitmap);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
+		}
+
+		private void Grayscale_Click(object sender, RoutedEventArgs e)
 		{
 
 		}

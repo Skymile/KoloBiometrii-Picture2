@@ -12,6 +12,9 @@ namespace WpfApp
 			bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 	}
 
+	public delegate double NiblackFormulae(double mean, double std);
+	// Zwraca double i bierze za parametry double mean, double std
+
 	public static class Effects
 	{
 		public unsafe static Bitmap Apply(Bitmap bmp)
@@ -34,8 +37,16 @@ namespace WpfApp
 				-channels + stride, 0 + stride, channels + stride,
 			};
 
-		public unsafe static Bitmap Niblack(Bitmap bmp)
+		public static Bitmap Phansalkar(Bitmap bmp) =>
+			Niblack(bmp, (mean, std) => mean * (1 + 2 * Math.Exp(-10 * mean) + 0.5 * (std / 0.25 - 1)));
+
+		public static Bitmap Savuola(Bitmap bmp) =>
+			Niblack(bmp, (mean, std) => mean * (1 + 0.5 * (std / 2 - 1)));
+
+		public unsafe static Bitmap Niblack(Bitmap bmp, NiblackFormulae formulae = null)
 		{
+			formulae ??= (mean, std) => 0.2 * std + mean;
+
 			BitmapData readData = bmp.LockBits(ImageLockMode.ReadOnly);
 			var writeBmp = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
 			BitmapData writeData = writeBmp.LockBits(ImageLockMode.WriteOnly);
@@ -48,9 +59,6 @@ namespace WpfApp
 			int len = stride * height;
 
 			int[] offsets = GetOffsets(stride, 3);
-
-			static double NiblackFormulae(double mean, double std) =>
-				0.2 * std + mean;
 
 			for (int i = stride + 3; i < len - stride - 3; i++)
 			{
@@ -65,7 +73,7 @@ namespace WpfApp
 				std /= offsets.Length - 1;
 				std = Math.Sqrt(std);
 
-				double result = NiblackFormulae(mean, std);
+				double result = formulae(mean, std);
 				w[i] = r[i] >= result ? byte.MaxValue : byte.MinValue;
 			}
 
