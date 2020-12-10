@@ -6,14 +6,7 @@ using System.Linq;
 
 namespace WpfApp
 {
-	public static class BitmapExtensions
-	{
-		public static BitmapData LockBits(this Bitmap bitmap, ImageLockMode lockMode) =>
-			bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), lockMode, PixelFormat.Format24bppRgb);
-	}
-
 	public delegate double NiblackFormulae(double mean, double std);
-	// Zwraca double i bierze za parametry double mean, double std
 
 	public static class Effects
 	{

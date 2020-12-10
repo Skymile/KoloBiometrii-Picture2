@@ -49,6 +49,30 @@ namespace WpfApp
 		}
 		private byte threshold = 128;
 
+		public double SauvolaRatio
+		{
+			get => this.sauvolaRatio;
+			set
+			{
+				Set(ref this.sauvolaRatio, value);
+				if (IsAutoRefreshOn)
+					Savuola_Click(null, null);
+			}
+		}
+		private double sauvolaRatio = 0.2;
+
+		public double SauvolaDiv
+		{
+			get => this.sauvolaDiv;
+			set
+			{
+				Set(ref this.sauvolaDiv, value);
+				if (IsAutoRefreshOn)
+					Savuola_Click(null, null);
+			}
+		}
+		private double sauvolaDiv = 0;
+
 		public double NiblackRatio
 		{
 			get => this.niblackRatio;
@@ -117,10 +141,10 @@ namespace WpfApp
 			}
 		}
 
-		private double phansalkarPow = 2;
-		private double phansalkarQ = 10;
+		private double phansalkarPow   = 2;
+		private double phansalkarQ     = 10;
 		private double phansalkarRatio = 0.5;
-		private double phansalkarDiv = 0.25;
+		private double phansalkarDiv   = 0.25;
 
 		private static BitmapSource CreateBitmapSource(Bitmap bmp)
 		{
@@ -169,24 +193,19 @@ namespace WpfApp
 
 		private void Niblack_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = Effects.Niblack(
-				IsAutoRefreshOn ? new Bitmap(Filename) : this.bitmap,
-				null,
-				this.NiblackRatio,
-				this.NiblackOffsetC
-			);
+			this.bitmap = Effects.Niblack(GetBitmap(), null, this.NiblackRatio, this.NiblackOffsetC);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
 		private void Savuola_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = Effects.Savuola(this.bitmap);
+			this.bitmap = Effects.Savuola(GetBitmap(), sauvolaRatio, sauvolaDiv);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
 		private void Phansalkar_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = Effects.Phansalkar(this.bitmap);
+			this.bitmap = Effects.Phansalkar(GetBitmap(), phansalkarPow, phansalkarQ, phansalkarRatio, phansalkarDiv);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
@@ -204,12 +223,11 @@ namespace WpfApp
 
 		private void Threshold_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = Effects.Threshold(
-				IsAutoRefreshOn ? new Bitmap(Filename) : this.bitmap,
-				this.threshold
-			);
+			this.bitmap = Effects.Threshold(GetBitmap(), this.threshold);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
+
+		private Bitmap GetBitmap() => IsAutoRefreshOn ? new Bitmap(Filename) : bitmap;
 
 		private void MainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) =>
 			this.MainLabel.Content = (int)this.MainSlider.Value;
@@ -222,5 +240,11 @@ namespace WpfApp
 		}
 
 		private const string Filename = "apple2.png";
+
+		private void K3M_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap = K3M.Apply(GetBitmap());
+			this.MainImage.Source = CreateBitmapSource(bitmap);
+		}
 	}
 }

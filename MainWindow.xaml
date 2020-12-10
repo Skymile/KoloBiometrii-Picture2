@@ -14,6 +14,8 @@
         <StackPanel>
             <CheckBox Content="AutoRefresh" IsChecked="{Binding IsAutoRefreshOn}"/>
 
+            <Button Content="K3M" Margin="5" Padding="5" Click="K3M_Click"/>
+
             <Button Content="Median"    Margin="5" Padding="5" Click="Median_Click"/>
             <Button Content="Sharpen"   Margin="5" Padding="5" Click="Sharpen_Click"/>
             <Button Content="Otsu"      Margin="5" Padding="5" Click="Otsu_Click"/>
@@ -45,7 +47,27 @@
 
 
             <Button Content="Sauvola"   Margin="5" Padding="5" Click="Savuola_Click"/>
+            <Slider 
+                Minimum="-1" 
+                Maximum="1" 
+                SmallChange="0.01"
+                Value="{Binding SauvolaRatio}"
+                AutoToolTipPlacement="TopLeft"
+                />
+            <Slider 
+                Minimum="-2" 
+                Maximum="2" 
+                SmallChange="0.01"
+                Value="{Binding SauvolaDiv}"
+                AutoToolTipPlacement="TopLeft"
+                />
+
+
             <Button Content="Phansalkar"   Margin="5" Padding="5" Click="Phansalkar_Click"/>
+            <Slider Minimum="-10" Maximum="10" SmallChange="0.1" Value="{Binding PhansalkarPow  }" AutoToolTipPlacement="TopLeft" /> 
+            <Slider Minimum="-10" Maximum="10" SmallChange="0.1" Value="{Binding PhansalkarQ    }" AutoToolTipPlacement="TopLeft" /> 
+            <Slider Minimum="-1" Maximum="1" SmallChange="0.01" Value="{Binding PhansalkarRatio}" AutoToolTipPlacement="TopLeft" /> 
+            <Slider Minimum="-10" Maximum="10" SmallChange="0.1" Value="{Binding PhansalkarDiv  }" AutoToolTipPlacement="TopLeft" />
 
             <Button Content="Grayscale"   Margin="5" Padding="5" Click="Grayscale_Click"/>
 
