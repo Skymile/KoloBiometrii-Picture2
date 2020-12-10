@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -10,16 +11,116 @@ namespace WpfApp
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
-		private Bitmap bitmap;
-
 		public MainWindow()
 		{
 			InitializeComponent();
-			this.bitmap = new Bitmap("apple.png");
+			this.bitmap = new Bitmap(Filename);
+			//Threshold = 67;
 			this.MainImage.Source = CreateBitmapSource(bitmap);
+			this.DataContext = this;
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void Set<T>(ref T field, T value)
+		{
+			field = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(field)));
+		}
+
+		public bool IsAutoRefreshOn
+		{
+			get => this.isAutoRefreshOn;
+			set => Set(ref this.isAutoRefreshOn, value);
+		}
+		private bool isAutoRefreshOn;
+
+		public byte Threshold
+		{
+			get => this.threshold;
+			set
+			{
+				Set(ref this.threshold, value);
+				if (IsAutoRefreshOn)
+					Threshold_Click(null, null);
+			}
+		}
+		private byte threshold = 128;
+
+		public double NiblackRatio
+		{
+			get => this.niblackRatio;
+			set
+			{
+				Set(ref this.niblackRatio, value);
+				if (IsAutoRefreshOn)
+					Niblack_Click(null, null);
+			}
+		}
+		private double niblackRatio = 0.2;
+
+		public double NiblackOffsetC
+		{
+			get => this.niblackOffsetC;
+			set
+			{
+				Set(ref this.niblackOffsetC, value);
+				if (IsAutoRefreshOn)
+					Niblack_Click(null, null);
+			}
+		}
+		private double niblackOffsetC = 0;
+
+		public double PhansalkarPow
+		{
+			get => phansalkarPow;
+			set
+			{
+				Set(ref this.phansalkarPow, value);
+				if (IsAutoRefreshOn)
+					Phansalkar_Click(null, null);
+			}
+		}
+
+		public double PhansalkarQ
+		{
+			get => phansalkarQ;
+			set
+			{
+				Set(ref this.phansalkarQ, value);
+				if (IsAutoRefreshOn)
+					Phansalkar_Click(null, null);
+			}
+		}
+
+		public double PhansalkarRatio
+		{
+			get => phansalkarRatio;
+			set
+			{
+				Set(ref this.phansalkarRatio, value);
+				if (IsAutoRefreshOn)
+					Phansalkar_Click(null, null);
+			}
+		}
+
+		public double PhansalkarDiv
+		{
+			get => phansalkarDiv;
+			set
+			{
+				Set(ref this.phansalkarDiv, value);
+				if (IsAutoRefreshOn)
+					Phansalkar_Click(null, null);
+			}
+		}
+
+		private double phansalkarPow = 2;
+		private double phansalkarQ = 10;
+		private double phansalkarRatio = 0.5;
+		private double phansalkarDiv = 0.25;
 
 		private static BitmapSource CreateBitmapSource(Bitmap bmp)
 		{
@@ -44,9 +145,9 @@ namespace WpfApp
 
 		private void Sharpen_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = Effects.Filter(this.bitmap, 
-				new[] 
-				{ 
+			this.bitmap = Effects.Filter(this.bitmap,
+				new[]
+				{
 					0, -1, 0,
 					-1, 5, -1,
 					0, -1, 0
@@ -66,12 +167,14 @@ namespace WpfApp
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
-		private void MainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) => 
-			this.MainLabel.Content = (int)this.MainSlider.Value;
-
 		private void Niblack_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = Effects.Niblack(this.bitmap);
+			this.bitmap = Effects.Niblack(
+				IsAutoRefreshOn ? new Bitmap(Filename) : this.bitmap,
+				null,
+				this.NiblackRatio,
+				this.NiblackOffsetC
+			);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
@@ -92,5 +195,32 @@ namespace WpfApp
 			this.bitmap = Effects.Grayscale(this.bitmap);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
+
+		private void Pixelize_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap = Effects.Pixelize(this.bitmap);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
+		}
+
+		private void Threshold_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap = Effects.Threshold(
+				IsAutoRefreshOn ? new Bitmap(Filename) : this.bitmap,
+				this.threshold
+			);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
+		}
+
+		private void MainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) =>
+			this.MainLabel.Content = (int)this.MainSlider.Value;
+
+		private Bitmap bitmap;
+
+		private void Save_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap?.Save("apple2.png");
+		}
+
+		private const string Filename = "apple2.png";
 	}
 }

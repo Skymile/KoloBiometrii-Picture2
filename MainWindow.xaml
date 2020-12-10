@@ -5,25 +5,57 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="569" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <Button Content="Median"  Margin="5" Padding="5" Click="Median_Click"/>
-            <Button Content="Sharpen" Margin="5" Padding="5" Click="Sharpen_Click"/>
-            <Button Content="Otsu"    Margin="5" Padding="5" Click="Otsu_Click"/>
-            <Button Content="Reset"   Margin="5" Padding="5" Click="Reset_Click"/>
+            <CheckBox Content="AutoRefresh" IsChecked="{Binding IsAutoRefreshOn}"/>
+
+            <Button Content="Median"    Margin="5" Padding="5" Click="Median_Click"/>
+            <Button Content="Sharpen"   Margin="5" Padding="5" Click="Sharpen_Click"/>
+            <Button Content="Otsu"      Margin="5" Padding="5" Click="Otsu_Click"/>
+            
+            <Button Content="Threshold" Margin="5" Padding="5" Click="Threshold_Click"/>
+            <Slider 
+                Minimum="0" 
+                Maximum="255" 
+                SmallChange="1" 
+                Value="{Binding Threshold}"
+                AutoToolTipPlacement="TopLeft"
+                />
 
             <Button Content="Niblack"   Margin="5" Padding="5" Click="Niblack_Click"/>
+            <Slider 
+                Minimum="-2" 
+                Maximum="2" 
+                SmallChange="0.1"
+                Value="{Binding NiblackRatio}"
+                AutoToolTipPlacement="TopLeft"
+                />
+            <Slider 
+                Minimum="-10" 
+                Maximum="10" 
+                SmallChange="0.1"
+                Value="{Binding NiblackOffsetC}"
+                AutoToolTipPlacement="TopLeft"
+                />
+
+
             <Button Content="Sauvola"   Margin="5" Padding="5" Click="Savuola_Click"/>
             <Button Content="Phansalkar"   Margin="5" Padding="5" Click="Phansalkar_Click"/>
 
             <Button Content="Grayscale"   Margin="5" Padding="5" Click="Grayscale_Click"/>
 
+            <Button Content="Pixelize" Margin="5" Padding="5" Click="Pixelize_Click"/>
+
+            <Button Content="Reset" Margin="5" Padding="5" Click="Reset_Click"/>
+
             <Slider Minimum="0" Maximum="100" Name="MainSlider" ValueChanged="MainSlider_ValueChanged" />
+
+            <Button Content="Save" Margin="5" Padding="5" Click="Save_Click"/>
 
             <Label Name="MainLabel"/>
 
