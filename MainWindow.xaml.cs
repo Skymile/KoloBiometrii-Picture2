@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -22,15 +24,24 @@ namespace WpfApp
 		{
 			InitializeComponent();
 
-			// 4 //  110  50 1
-			// 3 //  259 159 0
-			// 2 //  263 127 3
-			// 1 // 1566 339 2
+			// 4 //  110  50 1 //  2 1 0
+			// 3 //  259 159 0 //  5 3 0
+			// 2 //  263 127 3 //  5 2 0
+			// 1 // 1566 339 2 // 31 6 0  
+			//
+			//static int Hamming(IEnumerable<int> first, IEnumerable<int> second) =>
+			//	first
+			//		.Zip(second, (i, j) => i / 50 == j / 50 ? 1 : 0)
+			//		.Sum();
+			//
+			//static int Manhattan(IEnumerable<int> first, IEnumerable<int> second) =>
+			//	first.Zip(second, (i, j) => Math.Abs(i - j)).Sum();
 
 			this.bitmap = new Bitmap(OldFilename);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 			this.DataContext = this;
 		}
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
