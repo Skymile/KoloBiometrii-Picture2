@@ -22,6 +22,11 @@ namespace WpfApp
 		{
 			InitializeComponent();
 
+			// 4 //  110  50 1
+			// 3 //  259 159 0
+			// 2 //  263 127 3
+			// 1 // 1566 339 2
+
 			this.bitmap = new Bitmap(OldFilename);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 			this.DataContext = this;
@@ -244,7 +249,7 @@ namespace WpfApp
 			this.bitmap?.Save(Filename);
 		}
 
-		private const string OldFilename = "finger4.png";
+		private const string OldFilename = "finger1.png";
 		private const string Filename = "finger_temp.png";
 
 		private void K3M_Click(object sender, RoutedEventArgs e)

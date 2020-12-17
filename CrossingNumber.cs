@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace WpfApp
 {
@@ -16,8 +18,6 @@ namespace WpfApp
 	{
 		public unsafe static Bitmap Apply(Bitmap bmp, out (MinutiaeType Type, int count)[] minutiaes)
 		{
-			minutiaes = default;
-
 			var data = bmp.LockBits(ImageLockMode.ReadWrite);
 
 			int stride = data.Stride;
@@ -26,6 +26,13 @@ namespace WpfApp
 			int offset = stride + 3;
 
 			byte* ptr = (byte*)data.Scan0.ToPointer();
+
+			var dict = new Dictionary<MinutiaeType, int>
+			{
+				{ MinutiaeType.Ending     , 0 },
+				{ MinutiaeType.Bifurcation, 0 },
+				{ MinutiaeType.Crossing   , 0 },
+			};
 
 			for (int i = offset; i < stride * height - offset; i += 3)
 				if (ptr[i] != White)
@@ -37,12 +44,25 @@ namespace WpfApp
 					if (ptr[i + stride] != White) ++sum;
 
 					if (sum == 1)
+					{
+						++dict[MinutiaeType.Ending];
 						ptr[i] = 254;
+					}
 					else if (sum == 3)
+					{
+						++dict[MinutiaeType.Bifurcation];
 						ptr[i + 1] = 254;
+					}
 					else if (sum == 4)
+					{
+						++dict[MinutiaeType.Crossing];
 						ptr[i + 2] = 254;
+					}
 				}
+
+			minutiaes = dict
+				.Select(i => (i.Key, i.Value))
+				.ToArray();
 
 			bmp.UnlockBits(data);
 			return bmp;
