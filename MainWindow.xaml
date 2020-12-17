@@ -15,6 +15,7 @@
             <CheckBox Content="AutoRefresh" IsChecked="{Binding IsAutoRefreshOn}"/>
 
             <Button Content="K3M" Margin="5" Padding="5" Click="K3M_Click"/>
+            <Button Content="Crossing Number" Margin="5" Padding="5" Click="CN_Click"/>
 
             <Button Content="Median"    Margin="5" Padding="5" Click="Median_Click"/>
             <Button Content="Sharpen"   Margin="5" Padding="5" Click="Sharpen_Click"/>

@@ -4,8 +4,6 @@ using System.Drawing.Imaging;
 
 namespace WpfApp
 {
-	// Zwraca double i bierze za parametry double mean, double std
-
 	public static class K3M
 	{
 		public unsafe static Bitmap Apply(Bitmap bmp)

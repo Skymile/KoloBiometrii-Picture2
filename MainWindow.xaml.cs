@@ -22,8 +22,7 @@ namespace WpfApp
 		{
 			InitializeComponent();
 
-			this.bitmap = new Bitmap(Filename);
-			//Threshold = 67;
+			this.bitmap = new Bitmap(OldFilename);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 			this.DataContext = this;
 		}
@@ -193,7 +192,7 @@ namespace WpfApp
 
 		private void Reset_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap = new Bitmap("apple.png");
+			this.bitmap = new Bitmap(OldFilename);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 
@@ -242,14 +241,21 @@ namespace WpfApp
 
 		private void Save_Click(object sender, RoutedEventArgs e)
 		{
-			this.bitmap?.Save("apple2.png");
+			this.bitmap?.Save(Filename);
 		}
 
-		private const string Filename = "apple2.png";
+		private const string OldFilename = "finger4.png";
+		private const string Filename = "finger_temp.png";
 
 		private void K3M_Click(object sender, RoutedEventArgs e)
 		{
 			this.bitmap = K3M.Apply(GetBitmap());
+			this.MainImage.Source = CreateBitmapSource(bitmap);
+		}
+
+		private void CN_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap = CrossingNumber.Apply(GetBitmap(), out var minutiae);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 	}
