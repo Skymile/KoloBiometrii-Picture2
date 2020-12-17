@@ -28,6 +28,7 @@ namespace WpfApp
 
 			int count = 0;
 			int lastCount = 0;
+			bool any = false;
 			while (true)
 			{
 				count = 0;
@@ -39,16 +40,18 @@ namespace WpfApp
 						++count;
 					}
 
-				if (count == lastCount)
+				if (count == lastCount && !any)
 					break;
+				any = false;
 				lastCount = count;
 
 				foreach (HashSet<int> lookup in lookups)
 					foreach (var border in borders)
-					{
 						if (ptr[border] == One && lookup.Contains(ComputeSum(ptr + border, width)))
+						{
 							ptr[border] = Zero;
-					}
+							any = true;
+						}
 			}
 
 			bmp.UnlockBits(data);

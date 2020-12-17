@@ -6,6 +6,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
+// Tensorflow Keras // Python, .NET
+// ML.NET
+// Accord.NET // AForge.NET
+// OpenCV C, C++, Python, C# (EmguCV)
+
 namespace WpfApp
 {
 	/// <summary>
@@ -16,6 +21,7 @@ namespace WpfApp
 		public MainWindow()
 		{
 			InitializeComponent();
+
 			this.bitmap = new Bitmap(Filename);
 			//Threshold = 67;
 			this.MainImage.Source = CreateBitmapSource(bitmap);
