@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -27,7 +25,7 @@ namespace WpfApp
 			// 4 //  110  50 1 //  2 1 0
 			// 3 //  259 159 0 //  5 3 0
 			// 2 //  263 127 3 //  5 2 0
-			// 1 // 1566 339 2 // 31 6 0  
+			// 1 // 1566 339 2 // 31 6 0
 			//
 			//static int Hamming(IEnumerable<int> first, IEnumerable<int> second) =>
 			//	first
@@ -40,6 +38,8 @@ namespace WpfApp
 			this.bitmap = new Bitmap(OldFilename);
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 			this.DataContext = this;
+
+			Clusters_Click(null, null);
 		}
 
 
@@ -260,8 +260,8 @@ namespace WpfApp
 			this.bitmap?.Save(Filename);
 		}
 
-		private const string OldFilename = "finger1.png";
-		private const string Filename = "finger_temp.png";
+		private const string OldFilename = "test.png";
+		private const string Filename = "test.png";
 
 		private void K3M_Click(object sender, RoutedEventArgs e)
 		{
@@ -272,6 +272,12 @@ namespace WpfApp
 		private void CN_Click(object sender, RoutedEventArgs e)
 		{
 			this.bitmap = CrossingNumber.Apply(GetBitmap(), out var minutiae);
+			this.MainImage.Source = CreateBitmapSource(bitmap);
+		}
+
+		private void Clusters_Click(object sender, RoutedEventArgs e)
+		{
+			this.bitmap = Effects.Clusters(GetBitmap());
 			this.MainImage.Source = CreateBitmapSource(bitmap);
 		}
 	}

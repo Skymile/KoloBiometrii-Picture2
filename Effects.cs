@@ -10,6 +10,73 @@ namespace WpfApp
 
 	public static class Effects
 	{
+		public unsafe static Bitmap Clusters(Bitmap bmp)
+		{
+			BitmapData readData = bmp.LockBits(ImageLockMode.ReadOnly);
+			Bitmap writeBmp = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
+			BitmapData writeData = writeBmp.LockBits(ImageLockMode.WriteOnly);
+
+			byte* r = (byte*)readData.Scan0.ToPointer();
+			byte* w = (byte*)writeData.Scan0.ToPointer();
+
+			int length = readData.Stride * readData.Height;
+			const int bpp = 3;
+			int stride = readData.Stride;
+
+			int[] offsets =
+			{
+				-bpp,
+				bpp,
+				stride,
+				-stride,
+				-bpp + stride,
+				-bpp - stride,
+				bpp + stride,
+				bpp - stride,
+			};
+
+			var groups = new List<HashSet<int>>();
+
+			for (int i = 0; i < length; i += bpp)
+			{
+				var all     = new HashSet<int>();
+				var current = new List<int>();
+				var next    = new List<int>();
+
+				current.Add(i);
+				int value = r[i] / 5;
+
+				while (current.Count > 0)
+				{
+					// Znajduje kolejnych spełniających warunek
+					// Wszystkie Current są zamienione na All
+					// Wszystkie Next są teraz Current
+
+					foreach (int k in current)
+						if (!all.Contains(k))
+						{
+							all.Add(k);
+
+							foreach (int offset in offsets)
+							{
+								int o = k + offset;
+								if (o > 0 && o < length && value == r[o] / 5)
+									next.Add(o);
+							}
+						}
+					current = next;
+					next = new List<int>();
+
+				}
+			}
+
+			;
+
+			bmp.UnlockBits(readData);
+			writeBmp.UnlockBits(writeData);
+			return writeBmp;
+		}
+
 		public unsafe static Bitmap Apply(Bitmap bmp)
 		{
 			int[] matrix =
@@ -39,7 +106,7 @@ namespace WpfApp
 			int len = bmp.Width * 3 * bmp.Height;
 
 			for (int i = 0; i < len; i += 3)
-				ptr[i] = ptr[i + 1] = ptr[i + 2] = 
+				ptr[i] = ptr[i + 1] = ptr[i + 2] =
 					(ptr[i] + ptr[i + 1] + ptr[i + 2]) / 3 > threshold ? byte.MaxValue : byte.MinValue;
 
 			bmp.UnlockBits(data);
@@ -186,10 +253,10 @@ namespace WpfApp
 						foreach (int o in offsets)
 							sum += ptr[i + o];
 						sum /= blockHeight * blockWidth;
-	
+
 						if (sum < 0) sum = 0;
 						if (sum > 255) sum = 255;
-	
+
 						foreach (int o in offsets)
 							ptr[i + o] = (byte)sum;
 					}
@@ -228,7 +295,7 @@ namespace WpfApp
 			int height = bmp.Height;
 
 			int len = stride * height;
-			
+
 			for (int i = 0; i < len; i += 3)
 				ptr[i] = ptr[i + 1] = ptr[i + 2] = (byte)(
 					(ptr[i] + ptr[i + 1] + ptr[i + 2]) / 3
