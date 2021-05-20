@@ -18,7 +18,7 @@ namespace WpfApp
 	{
 		public unsafe static Bitmap Apply(Bitmap bmp, out (MinutiaeType Type, int count)[] minutiaes)
 		{
-			var data = bmp.LockBits(ImageLockMode.ReadWrite);
+			var data = bmp.LockBits(new Rectangle(Point.Empty, bmp.Size), ImageLockMode.ReadWrite, bmp.PixelFormat);
 
 			int stride = data.Stride;
 			int height = data.Height;

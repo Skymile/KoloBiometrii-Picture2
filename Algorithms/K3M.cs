@@ -1,59 +1,54 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace WpfApp
 {
 	public static class K3M
 	{
-		public unsafe static Bitmap Apply(Bitmap bmp)
+		public unsafe static Bitmap Apply(Image bmp)
 		{
 			lookups ??= new[] { A1, A2, A3, A4, A5 };
 
-			var data = bmp.LockBits(ImageLockMode.ReadWrite);
-
-			int width = data.Width;
-			int length = data.Stride * data.Height;
-
-			byte* ptr = (byte*)data.Scan0.ToPointer();
-
-			List<int> ones = new List<int>();
-			for (int i = width * 3 + 3; i < length - width * 3 - 3; i++)
-				if (ptr[i] == One)
-					ones.Add(i);
-
-			List<int> borders = new List<int>();
-
-			int count = 0;
-			int lastCount = 0;
-			bool any = false;
-			while (true)
+			var ptr = bmp.GetData();
+			fixed (byte* f = ptr)
 			{
-				count = 0;
+				List<int> ones = new();
+				for (int i = bmp.Stride + bmp.Channels; i < bmp.Length - bmp.Stride - bmp.Channels; i++)
+					if (ptr[i] == One)
+						ones.Add(i);
 
-				foreach (int black in ones)
-					if (ptr[black] == One && A0.Contains(ComputeSum(ptr + black, width)))
-					{
-						borders.Add(black);
-						++count;
-					}
+				List<int> borders = new();
 
-				if (count == lastCount && !any)
-					break;
-				any = false;
-				lastCount = count;
+				int count = 0;
+				int lastCount = 0;
+				bool any = false;
+				while (true)
+				{
+					count = 0;
 
-				foreach (HashSet<int> lookup in lookups)
-					foreach (var border in borders)
-						if (ptr[border] == One && lookup.Contains(ComputeSum(ptr + border, width)))
+					foreach (int black in ones)
+						if (ptr[black] == One && A0.Contains(ComputeSum(f + black, bmp.Width)))
 						{
-							ptr[border] = Zero;
-							any = true;
+							borders.Add(black);
+							++count;
 						}
+
+					if (count == lastCount && !any)
+						break;
+					any = false;
+					lastCount = count;
+
+					foreach (HashSet<int> lookup in lookups)
+						foreach (var border in borders)
+							if (ptr[border] == One && lookup.Contains(ComputeSum(f + border, bmp.Width)))
+							{
+								ptr[border] = Zero;
+								any = true;
+							}
+				}
 			}
 
-			bmp.UnlockBits(data);
-			return bmp;
+			return bmp.SetData(ptr).Free();
 		}
 
 		private static int[] GetOffsets(int stride, int channels) => new[]
